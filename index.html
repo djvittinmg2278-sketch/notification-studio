@@ -1,0 +1,223 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#090a0f">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Notification Studio">
+  <meta name="description" content="Notification Studio — simulador cenográfico de notificações para produção audiovisual.">
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="assets/icon-192.png">
+  <link rel="stylesheet" href="style.css">
+  <title>Notification Studio</title>
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <div>
+        <div class="eyebrow">PRODUÇÃO AUDIOVISUAL</div>
+        <h1>Notification Studio</h1>
+      </div>
+      <button id="recordModeBtn" class="icon-btn" aria-label="Modo gravação" title="Modo gravação">●</button>
+    </header>
+
+    <main>
+      <section class="notice-banner">
+        <span>🎬</span>
+        <div><strong>Modo cenográfico</strong><p>Todas as notificações são simulações visuais. Não há conexão com bancos, Pix ou instituições financeiras.</p></div>
+      </section>
+
+      <section id="creatorSection" class="grid">
+        <div class="panel editor-panel">
+          <div class="section-heading">
+            <div><span class="section-kicker">ESTÚDIO</span><h2>Criar Notificação</h2></div>
+            <button id="clearBtn" class="text-btn">Limpar</button>
+          </div>
+
+          <div class="form-grid">
+            <div class="field full">
+              <label>Logo</label>
+              <div class="upload-row">
+                <div id="logoPreview" class="logo-preview"><span>◎</span></div>
+                <div class="upload-actions">
+                  <label class="secondary-btn">
+                    Escolher imagem
+                    <input id="logoInput" type="file" accept="image/png,image/jpeg,image/webp" hidden>
+                  </label>
+                  <button id="removeLogoBtn" class="ghost-btn">Remover</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="field">
+              <label for="appName">Nome do aplicativo/remetente</label>
+              <input id="appName" placeholder="Banco Digital">
+            </div>
+            <div class="field">
+              <label for="title">Título da notificação</label>
+              <input id="title" placeholder="Pix recebido">
+            </div>
+
+            <div class="field full">
+              <label for="bodyText">Texto da notificação</label>
+              <textarea id="bodyText" rows="3" placeholder="Você recebeu um Pix de R$ 850,00"></textarea>
+            </div>
+
+            <div class="field">
+              <label for="amount">Valor <span>opcional</span></label>
+              <input id="amount" placeholder="R$ 850,00">
+            </div>
+            <div class="field">
+              <label for="sender">Nome do remetente <span>opcional</span></label>
+              <input id="sender" placeholder="João da Silva">
+            </div>
+
+            <div class="field">
+              <label for="timeMode">Horário</label>
+              <select id="timeMode">
+                <option value="now">Agora</option>
+                <option value="custom">Personalizado</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="customTime">Hora exibida</label>
+              <input id="customTime" type="time" disabled>
+            </div>
+
+            <div class="field">
+              <label for="type">Tipo de notificação</label>
+              <select id="type">
+                <option>Pix recebido</option>
+                <option>Venda realizada</option>
+                <option>Novo pedido</option>
+                <option>Pagamento recebido</option>
+                <option>Mensagem</option>
+                <option>Personalizada</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label>Som</label>
+              <div class="sound-control">
+                <select id="sound">
+                  <option value="soft">Suave</option>
+                  <option value="classic">Clássico</option>
+                  <option value="cash">Cash</option>
+                  <option value="none">Sem som</option>
+                </select>
+                <button id="soundToggle" class="toggle active" aria-label="Ativar som"><span></span></button>
+              </div>
+            </div>
+
+            <details class="advanced full">
+              <summary>Personalização visual</summary>
+              <div class="advanced-grid">
+                <div class="field">
+                  <label for="accent">Cor da notificação</label>
+                  <input id="accent" type="color" value="#ffffff">
+                </div>
+                <div class="field">
+                  <label for="duration">Duração da animação</label>
+                  <select id="duration">
+                    <option value="350">Rápida</option>
+                    <option value="550" selected>Normal</option>
+                    <option value="800">Suave</option>
+                  </select>
+                </div>
+                <div class="field">
+                  <label for="position">Posição</label>
+                  <select id="position">
+                    <option value="top">Topo</option>
+                    <option value="center">Centro</option>
+                    <option value="bottom">Inferior</option>
+                  </select>
+                </div>
+                <div class="field">
+                  <label for="theme">Tema</label>
+                  <select id="theme">
+                    <option value="dark">Escuro</option>
+                    <option value="light">Claro</option>
+                  </select>
+                </div>
+              </div>
+            </details>
+          </div>
+
+          <div class="action-row">
+            <button id="saveBtn" class="secondary-btn">＋ Salvar modelo</button>
+            <button id="fireBtn" class="primary-btn">🔔 Disparar notificação</button>
+          </div>
+        </div>
+
+        <div class="panel preview-panel">
+          <div class="section-heading">
+            <div><span class="section-kicker">LIVE</span><h2>Pré-visualização</h2></div>
+            <span class="live-dot">AO VIVO</span>
+          </div>
+          <div id="phoneStage" class="phone-stage">
+            <div class="statusbar"><span id="previewTime">9:41</span><span>▮▮▮  Wi‑Fi  🔋</span></div>
+            <div id="previewNotification" class="notification-card">
+              <div class="notif-logo" id="previewLogo">◎</div>
+              <div class="notif-content">
+                <div class="notif-head"><strong id="previewApp">Banco Digital</strong><span id="previewClock">Agora</span></div>
+                <strong id="previewTitle">Pix recebido</strong>
+                <p id="previewBody">Você recebeu um Pix de R$ 850,00</p>
+                <small id="previewSender"></small>
+              </div>
+            </div>
+            <div class="phone-label">SIMULAÇÃO • NÃO É UMA NOTIFICAÇÃO REAL</div>
+          </div>
+        </div>
+      </section>
+
+      <section id="modelsSection" class="panel list-panel">
+        <div class="section-heading">
+          <div><span class="section-kicker">BIBLIOTECA</span><h2>Modelos</h2></div>
+          <span id="modelCount" class="count">0</span>
+        </div>
+        <div id="modelsList" class="cards-list empty-state">Nenhum modelo salvo ainda.</div>
+      </section>
+
+      <section id="historySection" class="panel list-panel">
+        <div class="section-heading">
+          <div><span class="section-kicker">REGISTRO</span><h2>Histórico</h2></div>
+          <button id="clearHistoryBtn" class="text-btn">Limpar histórico</button>
+        </div>
+        <div id="historyList" class="history-list empty-state">Nenhuma notificação simulada ainda.</div>
+      </section>
+    </main>
+
+    <nav class="bottom-nav">
+      <button data-scroll="creatorSection" class="nav-item active"><span>＋</span>Criar</button>
+      <button data-scroll="modelsSection" class="nav-item"><span>▣</span>Modelos</button>
+      <button data-scroll="historySection" class="nav-item"><span>◷</span>Histórico</button>
+      <button id="navRecordBtn" class="nav-item"><span>●</span>Gravar</button>
+    </nav>
+  </div>
+
+  <div id="toast" class="toast"></div>
+
+  <div id="recordOverlay" class="record-overlay" aria-hidden="true">
+    <div class="record-top">
+      <span class="record-pill"><i></i> GRAVAÇÃO</span>
+      <button id="exitRecordBtn" class="secondary-btn">Sair</button>
+    </div>
+    <div class="record-content">
+      <div id="recordPreview" class="record-notification"></div>
+      <button id="recordFireBtn" class="record-fire">🔔<span>DISPARAR</span></button>
+      <button id="lockBtn" class="lock-btn">🔒 Bloquear configurações</button>
+      <p class="record-warning">SIMULAÇÃO CENOGRÁFICA • SEM INTEGRAÇÃO COM SERVIÇOS REAIS</p>
+    </div>
+  </div>
+
+  <div id="installHint" class="install-hint" hidden>
+    <strong>Instale na Tela de Início</strong>
+    <span>No Safari: Compartilhar → Adicionar à Tela de Início.</span>
+    <button id="closeInstall">×</button>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
