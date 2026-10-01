@@ -107,7 +107,7 @@ async function ensureNotificationPermission(){
 async function showNativeNotification(){
   if(!(await ensureNotificationPermission()))return false;
   const registration=await navigator.serviceWorker.ready;
-  await registration.showNotification(state.appName||"Notification Studio",{body:state.body||state.title||"Nova simulação",icon:"./assets/icon-192.png",badge:"./assets/icon-192.png",tag:"notification-studio-"+Date.now(),renotify:true,requireInteraction:true,data:{simulation:true}});
+  await registration.showNotification(state.appName||"Nubank",{body:state.body||state.title||"Nova simulação",icon:"./assets/icon-192.png",badge:"./assets/icon-192.png",tag:"notification-studio-"+Date.now(),renotify:true,requireInteraction:true,data:{simulation:true}});
   return true;
 }
 function updatePermissionStatus(){const el=$("permissionStatus");if(!el||!("Notification" in window))return;const p=Notification.permission;el.textContent=p==="granted"?"NOTIFICAÇÕES: ATIVAS":p==="denied"?"NOTIFICAÇÕES: BLOQUEADAS":"NOTIFICAÇÕES: INATIVAS";el.classList.toggle("granted",p==="granted");}
