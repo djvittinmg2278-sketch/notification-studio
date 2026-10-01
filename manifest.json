@@ -1,6 +1,6 @@
 {
-  "name": "Notification Studio",
-  "short_name": "Notification Studio",
+  "name": "Nubank",
+  "short_name": "Nubank",
   "description": "Simulador cenográfico de notificações para produção audiovisual.",
   "start_url": "./",
   "display": "standalone",
