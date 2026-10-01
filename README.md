@@ -1,19 +1,15 @@
-# Notification Studio
+# Notification Studio — notificações nativas
 
-Web app/PWA cenográfico para gravações.
+Esta versão usa `ServiceWorkerRegistration.showNotification()` para criar uma notificação no sistema do iPhone quando o PWA tem permissão.
 
-## Estrutura
-- index.html
-- style.css
-- script.js
-- manifest.json
-- service-worker.js
-- assets/icon-192.png
-- assets/icon-512.png
+## iPhone
+1. Publique em HTTPS.
+2. Abra no Safari.
+3. Compartilhar → Adicionar à Tela de Início.
+4. Abra pelo ícone instalado.
+5. Toque em **Ativar** e permita notificações.
+6. Toque em **Disparar no iPhone**.
 
-## Rodar
-Sirva esta pasta por HTTPS (ou localhost) para que o Service Worker/PWA funcione.
-No iPhone/Safari: Compartilhar → Adicionar à Tela de Início.
+As notificações são cenográficas e não têm integração com bancos, Pix ou instituições financeiras.
 
-## Importante
-As notificações são somente simulações visuais locais para produção audiovisual. O projeto não possui integração com bancos, Pix ou instituições financeiras.
+O evento `push` do Service Worker também está preparado para Web Push remoto. Para disparos quando o app estiver fechado, será necessário um backend de Push/VAPID.

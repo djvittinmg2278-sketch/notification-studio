@@ -96,26 +96,31 @@ function playSound(kind) {
 function makeSnapshot() {
   return {...state, createdAt: Date.now()};
 }
-function fireNotification(fromModel = false) {
-  playSound(state.sound);
-  const card = $("previewNotification");
-  card.classList.remove("show");
-  void card.offsetWidth;
-  card.classList.add("show");
-  setTimeout(() => card.classList.remove("show"), Math.max(3500, Number(state.duration)+2800));
-  history.unshift({
-    id: Date.now(),
-    time: nowTime(),
-    appName: state.appName,
-    title: state.title,
-    amount: state.amount,
-    type: state.type
-  });
-  history = history.slice(0, 30);
-  localStorage.setItem("ns-history", JSON.stringify(history));
-  renderHistory();
-  if (!fromModel) showToast("Notificação simulada disparada 🎬");
+async function ensureNotificationPermission(){
+  if (!("Notification" in window) || !("serviceWorker" in navigator)){showToast("Notificações web não estão disponíveis aqui.");return false;}
+  if(Notification.permission==="granted")return true;
+  if(Notification.permission==="denied"){showToast("Ative as notificações nos Ajustes do iPhone.");return false;}
+  const permission=await Notification.requestPermission();
+  updatePermissionStatus();
+  return permission==="granted";
 }
+async function showNativeNotification(){
+  if(!(await ensureNotificationPermission()))return false;
+  const registration=await navigator.serviceWorker.ready;
+  await registration.showNotification(state.appName||"Notification Studio",{body:state.body||state.title||"Nova simulação",icon:"./assets/icon-192.png",badge:"./assets/icon-192.png",tag:"notification-studio-"+Date.now(),renotify:true,requireInteraction:true,data:{simulation:true}});
+  return true;
+}
+function updatePermissionStatus(){const el=$("permissionStatus");if(!el||!("Notification" in window))return;const p=Notification.permission;el.textContent=p==="granted"?"NOTIFICAÇÕES: ATIVAS":p==="denied"?"NOTIFICAÇÕES: BLOQUEADAS":"NOTIFICAÇÕES: INATIVAS";el.classList.toggle("granted",p==="granted");}
+
+async function fireNotification(fromModel=false){
+  if(!(await showNativeNotification()))return;
+  playSound(state.sound);
+  const card=$("previewNotification");card.classList.remove("show");void card.offsetWidth;card.classList.add("show");
+  setTimeout(()=>card.classList.remove("show"),Math.max(3500,Number(state.duration)+2800));
+  history.unshift({id:Date.now(),time:nowTime(),appName:state.appName,title:state.title,amount:state.amount,type:state.type});history=history.slice(0,30);localStorage.setItem("ns-history",JSON.stringify(history));renderHistory();
+  if(!fromModel)showToast("Notificação nativa enviada ao iPhone 🔔");
+}
+
 function saveModel() {
   const name = state.title || state.type || "Novo modelo";
   models.unshift({id:Date.now(), name, data:makeSnapshot()});
@@ -186,7 +191,8 @@ function exitRecordMode() {
   $("recordOverlay").classList.remove("active");
   $("recordOverlay").setAttribute("aria-hidden","true");
 }
-function fireRecord() {
+async function fireRecord(){
+  if(!(await showNativeNotification()))return;
   playSound(state.sound);
   const card=$("recordPreview").firstElementChild;
   card.classList.remove("show"); void card.offsetWidth; card.classList.add("show");
@@ -200,6 +206,7 @@ fields.forEach(id => $(id)?.addEventListener("input", readFields));
 $("logoInput").addEventListener("change", e=>setLogo(e.target.files[0]));
 $("removeLogoBtn").addEventListener("click",()=>{state.logo="";saveState();renderLogo();updatePreview();});
 $("soundToggle").addEventListener("click",()=>{state.soundOn=!state.soundOn;$("soundToggle").classList.toggle("active",state.soundOn);saveState();});
+$("enableNotificationsBtn").addEventListener("click",async()=>{await ensureNotificationPermission();updatePermissionStatus()});
 $("fireBtn").addEventListener("click",()=>fireNotification());
 $("saveBtn").addEventListener("click",saveModel);
 $("clearBtn").addEventListener("click",reset);
@@ -226,4 +233,4 @@ if (window.matchMedia && window.matchMedia("(display-mode: standalone)").matches
 }
 if ("serviceWorker" in navigator) window.addEventListener("load",()=>navigator.serviceWorker.register("service-worker.js").catch(()=>{}));
 
-populate(); renderModels(); renderHistory();
+populate(); renderModels(); renderHistory(); updatePermissionStatus();
