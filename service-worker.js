@@ -1,0 +1,8 @@
+const CACHE='notification-studio-v2';
+const FILES=['./','./index.html','./style.css','./script.js','./manifest.json'];
+self.addEventListener('install',e=>{e.waitUntil(caches.open(CACHE).then(c=>c.addAll(FILES)));self.skipWaiting()});
+self.addEventListener('activate',e=>e.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k!==CACHE).map(k=>caches.delete(k)))).then(()=>self.clients.claim())));
+self.addEventListener('fetch',e=>{if(e.request.method!=='GET')return;e.respondWith(caches.match(e.request).then(r=>r||fetch(e.request).then(res=>{const c=res.clone();caches.open(CACHE).then(x=>x.put(e.request,c));return res}).catch(()=>caches.match('./index.html'))))});
+self.addEventListener('message',e=>{if(!e.data||e.data.type!=='SHOW_NATIVE_NOTIFICATION')return;const n=e.data.notification||{};e.waitUntil(self.registration.showNotification(n.appName||'Notification Studio',{body:n.body||'',icon:'./assets/icon-192.png',badge:'./assets/icon-192.png',tag:'notification-studio-'+Date.now(),renotify:true,requireInteraction:true,data:{simulation:true}}))});
+self.addEventListener('push',e=>{let n={};try{n=e.data?e.data.json():{}}catch{}e.waitUntil(self.registration.showNotification(n.appName||'Notification Studio',{body:n.body||n.title||'Nova simulação',icon:n.icon||'./assets/icon-192.png',badge:'./assets/icon-192.png',tag:'notification-studio-push',renotify:true,requireInteraction:true,data:{simulation:true}}))});
+self.addEventListener('notificationclick',e=>{e.notification.close();e.waitUntil(self.clients.matchAll({type:'window',includeUncontrolled:true}).then(cs=>cs[0]?cs[0].focus():self.clients.openWindow(self.registration.scope)))})
